@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.josem.shoplistbesta.OAuthTest">
+    tools:context=".RequestTest">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_oauth_test"/>
+    <include layout="@layout/content_request_test"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

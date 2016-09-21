@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,8 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -200,11 +197,12 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
-        } else if (id == R.id.nav_lispra_rest_test) {
-            Intent intent = new Intent(this, TestLispraREST.class);
+
+        }else if(id == R.id.nav_request_test) {
+            Intent intent = new Intent(this, RequestTest.class);
             startActivity(intent);
-        }else if(id == R.id.nav_lispra_oauth_test){
-            Intent intent = new Intent(this, OAuthTest.class);
+        }else if(id == R.id.nav_lispra_json_api_cookie_test){
+            Intent intent = new Intent(this,LoginTest.class);
             startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 

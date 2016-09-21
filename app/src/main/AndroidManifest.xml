@@ -26,12 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TestLispraREST"
-            android:label="@string/title_activity_test_lispra_rest"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:name=".RequestTest"
+            android:label="RequestTest"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
-            android:name=".OAuthTest"
-            android:label="@string/title_activity_oauth_test"
+            android:name=".LoginTest"
+            android:label="@string/title_activity_login_test"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

@@ -3,14 +3,18 @@
 
     <group android:checkableBehavior="single">
 
+        <!--<item-->
+            <!--android:id="@+id/nav_lispra_rest_test"-->
+            <!--android:icon="@drawable/ic_menu_send"-->
+            <!--android:title="Lispra Rest Test" />-->
         <item
-            android:id="@+id/nav_lispra_rest_test"
-            android:icon="@drawable/ic_menu_send"
-            android:title="Lispra Rest Test" />
-        <item
-            android:id="@+id/nav_lispra_oauth_test"
+            android:id="@+id/nav_request_test"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Lispra OAuth Test" />
+            android:title="Request Test" />
+        <item
+            android:id="@+id/nav_lispra_json_api_cookie_test"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Get JSON APi cookie" />
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"

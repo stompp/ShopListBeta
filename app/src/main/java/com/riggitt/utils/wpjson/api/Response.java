@@ -1,0 +1,114 @@
+package com.riggitt.utils.wpjson.api;
+
+import android.util.Log;
+
+import com.riggitt.utils.Utils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Created by josem on 20/09/2016.
+ */
+public class Response {
+    private int responseCode;
+
+    public int getResponseCode() {
+        return this.responseCode;
+    }
+
+    private String responseContent;
+
+    public String getResponseContent() {
+        return this.responseContent;
+    }
+
+    private Map<String, List<String>> headers;
+    public Map<String, List<String>> getResponseHeaders(){
+        return this.headers;
+    }
+    public boolean headerExists(String header){
+        if(this.headers==null) return false;
+        Set<String> keys = this.headers.keySet();
+        if(keys.contains(header)) return true;
+        return false;
+    }
+    public String getResponseHeader(String header){
+        if(!this.headerExists(header)) return "";
+        return this.headers.get(header).toString();
+    }
+    public Response() {
+        this.responseCode = -1;
+        this.responseContent = "RESPONSE NOT SET";
+        this.headers = null;
+    }
+
+    public Response(HttpURLConnection c){
+        this();
+        try {
+            this.createFrom(c);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("Response","Creation from HttpURLConnection failed");
+        }
+    }
+
+
+
+    public void createFrom(HttpURLConnection c) throws IOException {
+
+        this.headers = c.getHeaderFields();
+        this.responseCode = c.getResponseCode();
+        InputStream is = (this.responseCode == HttpURLConnection.HTTP_OK) ?
+                c.getInputStream() :
+                c.getErrorStream();
+        this.responseContent = Utils.toString(is);
+        if (is != null) {is.close();}
+        if (c != null) {c.disconnect();}
+
+
+    }
+
+    public String testHeaders(){
+        StringBuilder sb = new StringBuilder();
+        Map<String,List<String>> headers = this.getResponseHeaders();
+        if(headers==null) return "NULL HEADERS";
+        Set<String> keys = headers.keySet();
+
+        for (String k : keys)
+            sb.append(String.format("%s : %s \r\n",k,headers.get(k)));
+//            sb.append("\r\n");
+
+        return sb.toString();
+    }
+    public String test(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("#RESPONSE TEST#");
+        sb.append("\r\n");
+
+        sb.append(String.format("\tResponse code : %d",this.getResponseCode()));
+        sb.append("\r\n");
+        sb.append("\r\n");
+        sb.append("Headers");
+        sb.append("\r\n");
+        sb.append(this.testHeaders());
+        sb.append("\r\n");
+        sb.append("\r\n");
+        sb.append("Content : ");
+        sb.append("\r\n");
+        sb.append(this.getResponseContent());
+        sb.append("\r\n");
+
+
+
+        sb.append("#!RESPONSE TEST#");
+
+        return sb.toString();
+    }
+}
+
+

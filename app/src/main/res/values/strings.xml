@@ -20,10 +20,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_oauth_test">OAuthTest</string>
+
 
     <string-array name="http_request_methods">
         <item>GET</item>
         <item>POST</item>
     </string-array>
+    <string name="title_activity_login_test">LoginTest</string>
 </resources>
