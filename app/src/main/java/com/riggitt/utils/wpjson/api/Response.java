@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.riggitt.utils.Utils;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -15,32 +17,37 @@ import java.util.Set;
  * Created by josem on 20/09/2016.
  */
 public class Response {
-    private int responseCode;
+
+    protected int responseCode;
 
     public int getResponseCode() {
         return this.responseCode;
     }
 
-    private String responseContent;
+    protected String responseContent;
 
     public String getResponseContent() {
         return this.responseContent;
     }
 
-    private Map<String, List<String>> headers;
+    protected Map<String, List<String>> headers;
+
     public Map<String, List<String>> getResponseHeaders(){
         return this.headers;
     }
+
     public boolean headerExists(String header){
         if(this.headers==null) return false;
         Set<String> keys = this.headers.keySet();
         if(keys.contains(header)) return true;
         return false;
     }
+
     public String getResponseHeader(String header){
         if(!this.headerExists(header)) return "";
         return this.headers.get(header).toString();
     }
+
     public Response() {
         this.responseCode = -1;
         this.responseContent = "RESPONSE NOT SET";
@@ -57,9 +64,7 @@ public class Response {
         }
     }
 
-
-
-    public void createFrom(HttpURLConnection c) throws IOException {
+    protected void createFrom(HttpURLConnection c) throws IOException {
 
         this.headers = c.getHeaderFields();
         this.responseCode = c.getResponseCode();
@@ -69,10 +74,18 @@ public class Response {
         this.responseContent = Utils.toString(is);
         if (is != null) {is.close();}
         if (c != null) {c.disconnect();}
-
-
     }
 
+
+    public boolean success(){
+        if (this.responseCode == HttpURLConnection.HTTP_OK) return true;
+        return false;
+    }
+    public boolean contentSet(){
+        if (this.responseContent == null) return false;
+        else if (this.responseContent.length() == 0) return false;
+        return true;
+    }
     public String testHeaders(){
         StringBuilder sb = new StringBuilder();
         Map<String,List<String>> headers = this.getResponseHeaders();
@@ -109,6 +122,12 @@ public class Response {
 
         return sb.toString();
     }
+
+
+    public ResponseContentReader getContent() throws JSONException {
+        return new ResponseContentReader(this.getResponseContent());
+    }
+
 }
 
 

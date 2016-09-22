@@ -1,10 +1,12 @@
 package com.riggitt.utils;
 
+import android.content.Context;
 import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,6 +63,17 @@ public class Utils {
             ));
         }
         return sb.toString();
+    }
+
+    public static void showToast(Context c, String text,int length){
+        Toast.makeText(c,text,length).show();
+    }
+
+    public static void shortToast(Context c, String text){
+       showToast(c,text,Toast.LENGTH_SHORT);
+    }
+    public static void longToast(Context c, String text){
+        showToast(c,text,Toast.LENGTH_LONG);
     }
     public static class UI{
         public static void expand(final View v) {

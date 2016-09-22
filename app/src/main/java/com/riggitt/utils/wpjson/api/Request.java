@@ -264,6 +264,11 @@ public class Request {
         this.response = response;
     }
 
+    public boolean isResponseSet(){
+        if(this.response != null) return true;
+        return false;
+    }
+
 
 
     public String test(){

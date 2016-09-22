@@ -26,13 +26,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-        ShopListItem shopItem;
-        EditText itemQuantityEditText;
-        EditText itemQuantityUnitsEditText;
-        EditText itemNameEditText;
-        ListView lv;
+    ShopListItem shopItem;
+    EditText itemQuantityEditText;
+    EditText itemQuantityUnitsEditText;
+    EditText itemNameEditText;
+    ListView lv;
 
-        ArrayList<String> itemsStringsList;
+    ArrayList<String> itemsStringsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,20 +68,19 @@ public class MainActivity extends AppCompatActivity
         itemsStringsList = new ArrayList<String>();
 
 
-
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter and your
         // array as a third parameter.
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                itemsStringsList );
+                itemsStringsList);
 
         lv.setAdapter(arrayAdapter);
 
-        itemQuantityEditText = (EditText)findViewById(R.id.editTextQuantity);
-        itemQuantityUnitsEditText = (EditText)findViewById(R.id.editTextQuantityUnits);
-        itemNameEditText = (EditText)findViewById(R.id.editTextItemName);
+        itemQuantityEditText = (EditText) findViewById(R.id.editTextQuantity);
+        itemQuantityUnitsEditText = (EditText) findViewById(R.id.editTextQuantityUnits);
+        itemNameEditText = (EditText) findViewById(R.id.editTextItemName);
 
         itemQuantityEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 //                shopItem.setQuantity(Float.parseFloat(charSequence.toString()));
                 String c = charSequence.toString();
-                if(c.length() == 0) shopItem.setQuantity(1);
+                if (c.length() == 0) shopItem.setQuantity(1);
                 else shopItem.setQuantity(Float.parseFloat(charSequence.toString()));
             }
 
@@ -139,20 +138,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        Button addButton = (Button)findViewById(R.id.buttonAddItem);
+        Button addButton = (Button) findViewById(R.id.buttonAddItem);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 /*                shopItem.setQuantity(itemQuantityEditText.toString());
                 shopItem.setQuantityUnits(itemQuantityUnitsEditText.toString());
                 shopItem.setName(itemNameEditText.toString());*/
-                if(shopItem.stringReady())itemsStringsList.add(shopItem.toString());
+                if (shopItem.stringReady()) itemsStringsList.add(shopItem.toString());
 //                Toast.makeText(view.getContext(),shopItem.toString(),Toast.LENGTH_SHORT).show();
 
 
             }
         });
-
 
 
     }
@@ -195,14 +193,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-
-        }else if(id == R.id.nav_request_test) {
+        if (id == R.id.nav_request_test) {
             Intent intent = new Intent(this, RequestTest.class);
             startActivity(intent);
-        }else if(id == R.id.nav_lispra_json_api_cookie_test){
-            Intent intent = new Intent(this,LoginTest.class);
+        } else if (id == R.id.nav_lispra_json_api_cookie_test) {
+            Intent intent = new Intent(this, LoginTest.class);
             startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 

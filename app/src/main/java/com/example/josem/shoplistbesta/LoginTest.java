@@ -12,8 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.riggitt.utils.wpjson.api.ResponseContentReader;
 import com.riggitt.utils.wpjson.api.Request;
 import com.riggitt.utils.wpjson.api.Response;
+import com.riggitt.utils.wpjson.api.UserController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,43 +59,62 @@ public class LoginTest extends AppCompatActivity {
             }
         });
     }
-
     public void startAuthorization() {
         String user = this.userEditText.getText().toString();
         String password = this.passwordEditText.getText().toString();
-        startAuthorization(user, password, new Request.OnRequestDoneListener() {
+
+        UserController.startAuthorization(user, password, true, new UserController.OnAuthorizationDoneListener() {
             @Override
-            public void onRequestDone(Request request) {
-//                StringBuilder sb = new StringBuilder();
-//                sb.append("REQUEST DONE\r\n");
-                if (request != null) {
-                    Response r = request.getResponse();
-                    if (r != null) {
-                        showOutput(r.test());
-//                        sb.append(String.format("Response Code : %d \r\n", r.getResponseCode()));
-//                        sb.append("Response Content:\r\n");
-//                        sb.append(r.getResponseContent());
+            public void onAuthorizationSuccess(Response r) {
+                Toast.makeText(getApplicationContext(),"AUTH SUCCES",Toast.LENGTH_SHORT).show();
+                showOutput(r.test());
+            }
 
-                    }
-                }
-
-//                showOutput(sb.toString());
+            @Override
+            public void onAuthorizationFail(Response r) {
+                Toast.makeText(getApplicationContext(),"AUTH FAILED",Toast.LENGTH_SHORT).show();
+                showOutput(r.test());
             }
         });
+//        UserController.startAuthorization(user, password, true,new Request.OnRequestDoneListener() {
+//            @Override
+//            public void onRequestDone(Request request) {
+//                if (request != null) {
+//                    Response r = request.getResponse();
+//                    if (r != null) {
+//                        try {
+//                            ResponseContentReader cp = r.getContent();
+//                            showOutput(cp.debugKeys());
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+////                        showOutput(r.test());
+////                        parseResponseContent(r.getResponseContent());
+////                        sb.append(String.format("Response Code : %d \r\n", r.getResponseCode()));
+////                        sb.append("Response Content:\r\n");
+////                        sb.append(r.getResponseContent());
+//
+//                    }
+//                }
+//
+////                showOutput(sb.toString());
+//            }
+//        });
     }
 
-    public void startAuthorization(String user, String password, Request.OnRequestDoneListener listener) {
 
-        Request r = new Request();
-        r.setPath("/api/user/generate_auth_cookie/");
-        r.postParamsInBody(true);
+    public void parseResponseContent(String content){
+        try {
+            JSONObject o = new JSONObject(content);
 
-        r.setRequestParameter("username", user);
-        r.setRequestParameter("password", password);
-        r.setRequestParameter("insecure", "cool");
-        r.setRequestParameter("dev", "1");
-        r.setOnRequestDoneListener(listener);
-        r.start();
+            String status = o.optString("status");
+
+            Toast.makeText(getApplicationContext(),"Status is " + status,Toast.LENGTH_SHORT).show();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void testRequest() {
