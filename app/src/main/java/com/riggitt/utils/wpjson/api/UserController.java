@@ -7,7 +7,7 @@ import org.json.JSONException;
 /**
  * Created by josem on 20/09/2016.
  */
-public class UserController extends WPJSONApi {
+public class UserController extends WPJSONApi implements Constants {
 
     public static final String CONTROLLER_NAME = "user";
 
