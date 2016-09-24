@@ -21,6 +21,7 @@ import com.riggitt.utils.wpjson.api.Request;
 import com.riggitt.utils.wpjson.api.Response;
 import com.riggitt.utils.wpjson.api.UserController;
 import com.riggitt.utils.wpjson.api.UserSession;
+import com.riggitt.utils.wpjson.api.interfaces.OnAuthorizationDoneListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,7 +89,7 @@ public class LoginTest extends AppCompatActivity {
         String user = this.userEditText.getText().toString();
         String password = this.passwordEditText.getText().toString();
 
-        UserController.startAuthorization(getApplication(),user, password, true, new UserController.OnAuthorizationDoneListener() {
+        UserController.startAuthorization(getApplication(),user, password, true, new OnAuthorizationDoneListener() {
             @Override
             public void onAuthorizationSuccess(UserSession user) {
                 Toast.makeText(getApplicationContext(), "AUTH SUCCES", Toast.LENGTH_SHORT).show();

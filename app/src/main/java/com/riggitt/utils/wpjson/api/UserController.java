@@ -4,6 +4,8 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 import com.riggitt.utils.Utils;
+import com.riggitt.utils.wpjson.api.interfaces.OnAuthorizationDoneListener;
+import com.riggitt.utils.wpjson.api.interfaces.UserSessionValidatorListener;
 
 import org.json.JSONException;
 
@@ -31,65 +33,10 @@ public class UserController extends WPJSONApi implements Constants {
         );
     }
 
-    public interface UserSessionValidatorListener {
-        void onValidationStarted();
-        void onValidationSuccess(UserSession user);
-        void OnValidationFail(Response r);
-
-    }
-
-    public interface OnAuthorizationDoneListener {
-        void onAuthorizationSuccess(UserSession user);
-
-        void onAuthorizationFail(Response r);
-    }
 
 
-//    public static void startAuthorization(String user, String password, boolean insecure, final OnAuthorizationDoneListener listener) {
-//
-//        Request r = new Request();
-//        r.setPath(getMethodPath(METHOD_GENERATE_AUTH_COOKIE));
-//        r.postParamsInBody(true);
-//        r.setRequestParameter("dev", "1");
-//        r.setRequestParameter("username", user);
-//        r.setRequestParameter("password", password);
-//        if (insecure) {
-//            r.setRequestParameter("insecure", "cool");
-//        } else {
-//            r.usingHTTPS(true);
-//        }
-//        r.setOnRequestDoneListener(new Request.OnRequestDoneListener() {
-//            @Override
-//            public void onRequestDone(Request request) {
-//                boolean success = false;
-//                try {
-//                    ResponseContentReader rcr = request.getResponse().getContent();
-//                    if (rcr.isOK()
-//                            && rcr.isKeyStringSet(ResponseContentReader.COOKIE)
-//                            && rcr.isKeyStringSet(ResponseContentReader.COOKIE_NAME)) {
-//                        success = true;
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    if (success) {
-//                        try {
-//                            UserSession user = new UserSession(request.getResponse().getContent());
-//                            listener.onAuthorizationSuccess(user);
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                            listener.onAuthorizationFail(request.getResponse());
-//                        }
-//
-//                    } else {
-//                        listener.onAuthorizationFail(request.getResponse());
-//                    }
-//                }
-//
-//            }
-//        });
-//        r.start();
-//    }
+
+
 
     public static void startAuthorization(final Application app,String user, String password, boolean insecure, final OnAuthorizationDoneListener listener) {
         WPJSONApiRequest r = new WPJSONApiRequest(
@@ -176,7 +123,7 @@ public class UserController extends WPJSONApi implements Constants {
 
 
                     if (success) {
-                        listener.onValidationSuccess(user);
+                        listener.onValidationSuccess();
                     } else {
                         user.logOutFromApp(app);
                         listener.OnValidationFail(r);
@@ -190,10 +137,6 @@ public class UserController extends WPJSONApi implements Constants {
         });
         r.start();
         listener.onValidationStarted();
-
-    }
-
-    public static void startRequest(String method, Map<String, String> params, boolean insecure, Request.OnRequestDoneListener listener) {
 
     }
 

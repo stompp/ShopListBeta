@@ -71,7 +71,7 @@ public class UserMainActivity extends AppCompatActivity
             userMailTextView.setText(user.getUser().getEmail());
             showOutput(user.getUser().getDisplayname() + " " + user.getUser().getEmail());
         }else{
-            goToLogin();
+            logOut();
         }
     }
 
@@ -80,9 +80,17 @@ public class UserMainActivity extends AppCompatActivity
         if(this.user != null) return true;
         return false;
     }
-    public void goToLogin(){
+
+
+    public void logOut(){
+        if(this.user!=null){
+            this.user.logOutFromApp(getApplication());
+
+        }
         Intent intent = new Intent(this, LispraLoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
     public void showOutput(String s){
@@ -132,20 +140,18 @@ public class UserMainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_settings) {
             return true;
         }else if(id == R.id.action_log_out){
-            if(this.user!=null){
-                this.user.logOutFromApp(getApplication());
-                goToLogin();
-            }
+           logOut();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

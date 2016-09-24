@@ -19,6 +19,8 @@ import com.riggitt.utils.wpjson.api.Constants;
 import com.riggitt.utils.wpjson.api.Response;
 import com.riggitt.utils.wpjson.api.UserController;
 import com.riggitt.utils.wpjson.api.UserSession;
+import com.riggitt.utils.wpjson.api.interfaces.OnAuthorizationDoneListener;
+import com.riggitt.utils.wpjson.api.interfaces.UserSessionValidatorListener;
 
 public class LispraLoginActivity extends AppCompatActivity {
 
@@ -26,6 +28,7 @@ public class LispraLoginActivity extends AppCompatActivity {
     TextInputLayout passwordWrapper;
 
     LinearLayout inputs;
+    LinearLayout progress;
     TextView statusOutput;
     ProgressBar progressBar;
 
@@ -37,10 +40,11 @@ public class LispraLoginActivity extends AppCompatActivity {
         usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
         passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
 
-        usernameWrapper.setHint("User or Email");
-        passwordWrapper.setHint("Password");
+//        usernameWrapper.setHint("User or Email");
+//        passwordWrapper.setHint("Password");
 
         inputs = (LinearLayout) findViewById(R.id.inputsLayout);
+        progress = (LinearLayout) findViewById(R.id.progressLayout);
         statusOutput = (TextView) findViewById(R.id.statusOutput);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -54,6 +58,8 @@ public class LispraLoginActivity extends AppCompatActivity {
 
             }
         });
+
+
 
 
     }
@@ -98,17 +104,6 @@ public class LispraLoginActivity extends AppCompatActivity {
         }
     }
 
-    public void testProgress() {
-        progressStart("Doing Something");
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                progressReset();
-            }
-
-        }, 5000); // 5000ms delay
-    }
 
     public boolean validateUser() {
         String user = usernameWrapper.getEditText().getText().toString();
@@ -131,11 +126,27 @@ public class LispraLoginActivity extends AppCompatActivity {
     public boolean validateInputs() {
         return (validateUser() && validatePassword());
     }
+    public void testProgress() {
+        progressStart("Doing Something");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressReset();
+            }
+
+        }, 5000); // 5000ms delay
+    }
 
     public void progressStart(String status) {
-        inputs.setVisibility(View.GONE);
-        statusOutput.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+
+        Utils.UI.collapse(inputs);
+        Utils.UI.expand(progress);
+//        inputs.setVisibility(View.GONE);
+//        progress.setVisibility(View.VISIBLE);
+
+//        statusOutput.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
         statusOutput.setText(status);
         progressBar.setIndeterminate(true);
     }
@@ -147,22 +158,26 @@ public class LispraLoginActivity extends AppCompatActivity {
     public void progressReset() {
 
         progressBar.setIndeterminate(false);
-        statusOutput.setText("");
-        progressBar.setVisibility(View.GONE);
-        statusOutput.setVisibility(View.GONE);
-        inputs.setVisibility(View.VISIBLE);
+        statusOutput.setText("WELCOME");
+//        progressBar.setVisibility(View.GONE);
+//        statusOutput.setVisibility(View.GONE);
+//        progress.setVisibility(View.GONE);
+//        inputs.setVisibility(View.VISIBLE);
+
+        Utils.UI.collapse(progress);
+        Utils.UI.expand(inputs);
     }
 
     public void startUserMain() {
 
+
         Intent intent = new Intent(this, UserMainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
-    public void logToUserMain(UserSession us) {
-        us.logInToApp(getApplication());
-        startUserMain();
-    }
+
 
     private void startAuthorization() {
         progressStart("Validating Input");
@@ -181,7 +196,7 @@ public class LispraLoginActivity extends AppCompatActivity {
                 user,
                 password,
                 true,
-                new UserController.OnAuthorizationDoneListener() {
+                new OnAuthorizationDoneListener() {
                     @Override
                     public void onAuthorizationSuccess(UserSession user) {
                         Utils.shortToast(getApplicationContext(), "AUTH SUCCES");
@@ -207,14 +222,14 @@ public class LispraLoginActivity extends AppCompatActivity {
         UserController.validateUserSession(
                 getApplication(),
                 true,
-                new UserController.UserSessionValidatorListener() {
+                new UserSessionValidatorListener() {
                     @Override
                     public void onValidationStarted() {
                         progressStart("Validating user");
                     }
 
                     @Override
-                    public void onValidationSuccess(UserSession user) {
+                    public void onValidationSuccess() {
                         Utils.shortToast(getApplicationContext(), "Validation success!!");
                         setProgressStatus("User validated");
                         startUserMain();
