@@ -1,5 +1,8 @@
 package com.example.josem.shoplistbesta;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,15 +15,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.riggitt.utils.wpjson.api.ResponseContentReader;
+import com.riggitt.utils.Utils;
+import com.riggitt.utils.wpjson.api.Constants;
 import com.riggitt.utils.wpjson.api.Request;
 import com.riggitt.utils.wpjson.api.Response;
 import com.riggitt.utils.wpjson.api.UserController;
+import com.riggitt.utils.wpjson.api.UserSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginTest extends AppCompatActivity {
+//    public final static String LOGGED_USER = "riggitt.utils.wpjson.api.LoggedUser";
 
     private EditText userEditText;
     private EditText passwordEditText;
@@ -59,20 +65,43 @@ public class LoginTest extends AppCompatActivity {
             }
         });
     }
+
+    public void saveToSharedPreferences(UserSession us) {
+        SharedPreferences sp = getApplication().getSharedPreferences("USER_SESSION", Context.MODE_PRIVATE);
+        SharedPreferences.Editor e = sp.edit();
+        e.putString("TEST", "SOY UN TEST");
+        e.putString(Constants.USER_SESSION_INTENT_EXTRA, us.toString());
+        e.apply();
+
+//        sp.edit().putString(Constants.USER_SESSION_INTENT_EXTRA,us.toString()).commit();
+    }
+
+    public void logToUserMain(UserSession us) {
+
+        Intent intent = new Intent(this, UserMainActivity.class);
+        intent.putExtra(Constants.USER_SESSION_INTENT_EXTRA, us.toString());
+        startActivity(intent);
+
+    }
+
     public void startAuthorization() {
         String user = this.userEditText.getText().toString();
         String password = this.passwordEditText.getText().toString();
 
-        UserController.startAuthorization(user, password, true, new UserController.OnAuthorizationDoneListener() {
+        UserController.startAuthorization(getApplication(),user, password, true, new UserController.OnAuthorizationDoneListener() {
             @Override
-            public void onAuthorizationSuccess(Response r) {
-                Toast.makeText(getApplicationContext(),"AUTH SUCCES",Toast.LENGTH_SHORT).show();
-                showOutput(r.test());
+            public void onAuthorizationSuccess(UserSession user) {
+                Toast.makeText(getApplicationContext(), "AUTH SUCCES", Toast.LENGTH_SHORT).show();
+                saveToSharedPreferences(user);
+                logToUserMain(user);
+//                showOutput(user.toString());
+                showOutput("LOGGING IN!");
+
             }
 
             @Override
             public void onAuthorizationFail(Response r) {
-                Toast.makeText(getApplicationContext(),"AUTH FAILED",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "AUTH FAILED", Toast.LENGTH_SHORT).show();
                 showOutput(r.test());
             }
         });
@@ -104,13 +133,28 @@ public class LoginTest extends AppCompatActivity {
     }
 
 
-    public void parseResponseContent(String content){
+//    public void startCookieValidation(String cookie) {
+//
+//        UserController.startCookieValidation(cookie, true, new UserController.OnAuthorizationDoneListener() {
+//            @Override
+//            public void onAuthorizationSuccess(UserSession user) {
+//                Utils.shortToast(getApplicationContext(), "COOKIE VALIDATED");
+//            }
+//
+//            @Override
+//            public void onAuthorizationFail(Response r) {
+//                Utils.shortToast(getApplicationContext(), "COOKIE VALIDATION FAILED");
+//            }
+//        });
+//    }
+
+    public void parseResponseContent(String content) {
         try {
             JSONObject o = new JSONObject(content);
 
             String status = o.optString("status");
 
-            Toast.makeText(getApplicationContext(),"Status is " + status,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Status is " + status, Toast.LENGTH_SHORT).show();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -156,6 +200,9 @@ public class LoginTest extends AppCompatActivity {
     public void showOutput(String s) {
         this.outputTextView.setMovementMethod(new ScrollingMovementMethod());
         this.outputTextView.setText(s);
-        this.outputTextView.scrollTo(0,0);
+        this.outputTextView.scrollTo(0, 0);
     }
+
+
+
 }

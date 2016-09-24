@@ -31,7 +31,7 @@ public class Request {
     public static final int READ_TIMEOUT_DEFAULT = 10000;
     public static final int CONNECT_TIMEOUT_DEFAULT = 15000;
 
-    private int readTimeOut;
+    protected int readTimeOut;
 
     public int getReadTimeOut() {
         return readTimeOut;
@@ -41,7 +41,7 @@ public class Request {
         this.readTimeOut = readTimeOut;
     }
 
-    private int connectTimeOut;
+    protected int connectTimeOut;
 
     public int getConnectTimeOut() {
         return connectTimeOut;
@@ -52,7 +52,7 @@ public class Request {
     }
 
 
-    private int httpMode;
+    protected int httpMode;
 
     public int getHttpMode() {
         return this.httpMode;
@@ -71,7 +71,7 @@ public class Request {
     }
 
 
-    private int requestMode;
+    protected int requestMode;
 
     public int getRequestMode() {
         return requestMode;
@@ -109,9 +109,24 @@ public class Request {
     }
 
 
-    private Map<String, String> headers;
+    public void setRequestMode(int requestMode) {
+        switch (requestMode) {
+            case POST:
+                this.setPostMode();
+                break;
+            case POST_PARAMS_IN_BODY:
+                this.setPostMode(true);
+                break;
+            default:
+                this.setGetMode();
+                break;
+        }
+    }
 
-    public boolean hasRequestProperties(){
+
+    protected Map<String, String> headers;
+
+    public boolean hasRequestProperties() {
         return !this.headers.isEmpty();
     }
 
@@ -134,8 +149,7 @@ public class Request {
     }
 
 
-
-    private String url;
+    protected String url;
 
     public void setUrl(String url) {
 
@@ -158,7 +172,7 @@ public class Request {
 
     }
 
-    private String path;
+    protected String path;
 
     public void setPath(String path) {
 
@@ -176,7 +190,7 @@ public class Request {
     }
 
 
-    private Map<String, String> params;
+    protected Map<String, String> params;
 
     public Map<String, String> getParams() {
         return this.params;
@@ -194,6 +208,13 @@ public class Request {
     public void setRequestParameter(String key, String value) {
         this.params.put(key, value);
     }
+
+    public void removeRequestParameter(String key) {
+        if (this.params.containsKey(key)) {
+            this.params.remove(key);
+        }
+    }
+
 
     public String buildEncodedParams() {
         if (this.params.isEmpty()) return "";
@@ -221,8 +242,8 @@ public class Request {
         return sb.toString();
     }
 
-    private boolean hasBody;
-    private String requestBody;
+    protected boolean hasBody;
+    protected String requestBody;
 
     public String getRequestBody() {
         return requestBody;
@@ -237,7 +258,7 @@ public class Request {
         return (this.requestBody == null) ? false : hasBody;
     }
 
-    private OnRequestDoneListener listener;
+    protected OnRequestDoneListener listener;
 
     public OnRequestDoneListener getListener() {
         return listener;
@@ -253,7 +274,7 @@ public class Request {
         }
     }
 
-    private Response response;
+    protected Response response;
 
 
     public Response getResponse() {
@@ -264,52 +285,51 @@ public class Request {
         this.response = response;
     }
 
-    public boolean isResponseSet(){
-        if(this.response != null) return true;
+    public boolean isResponseSet() {
+        if (this.response != null) return true;
         return false;
     }
 
 
-
-    public String test(){
+    public String test() {
         StringBuilder sb = new StringBuilder();
         sb.append("REQUEST TEST");
         sb.append("\r\n");
-        sb.append(String.format("%s : %s \r\n","httpMode",this.usingHTTPS()? "https":"http"));
-        sb.append(String.format("%s : %s \r\n","requestMode",this.isGet() ? "GET":"POST"));
-        sb.append(String.format("%s : %s \r\n","postParamsInBody",this.postParamsInBody() ? "true":"false"));
+        sb.append(String.format("%s : %s \r\n", "httpMode", this.usingHTTPS() ? "https" : "http"));
+        sb.append(String.format("%s : %s \r\n", "requestMode", this.isGet() ? "GET" : "POST"));
+        sb.append(String.format("%s : %s \r\n", "postParamsInBody", this.postParamsInBody() ? "true" : "false"));
 
-        sb.append(String.format("%s : %d \r\n","readTimeOut",this.getReadTimeOut()));
-        sb.append(String.format("%s : %d \r\n","readTimeOut",this.getConnectTimeOut()));
+        sb.append(String.format("%s : %d \r\n", "readTimeOut", this.getReadTimeOut()));
+        sb.append(String.format("%s : %d \r\n", "readTimeOut", this.getConnectTimeOut()));
 
-        sb.append(String.format("%s : %s \r\n","url",this.url));
-        sb.append(String.format("%s : %s \r\n","path",this.path));
-        sb.append(String.format("%s : %s \r\n","hasParams",(this.hasParams()) ? "true":"false"));
-        for (Map.Entry<String,String> e : this.params.entrySet()) {
-            sb.append(String.format("PARAM %s : %s \r\n",e.getKey(),e.getValue()));
+        sb.append(String.format("%s : %s \r\n", "url", this.url));
+        sb.append(String.format("%s : %s \r\n", "path", this.path));
+        sb.append(String.format("%s : %s \r\n", "hasParams", (this.hasParams()) ? "true" : "false"));
+        for (Map.Entry<String, String> e : this.params.entrySet()) {
+            sb.append(String.format("PARAM %s : %s \r\n", e.getKey(), e.getValue()));
         }
-        sb.append(String.format("%s : %s \r\n","encodedParams",this.buildEncodedParams()));
-        sb.append(String.format("%s : %s \r\n","encoded url",this.buildRequestURL()));
+        sb.append(String.format("%s : %s \r\n", "encodedParams", this.buildEncodedParams()));
+        sb.append(String.format("%s : %s \r\n", "encoded url", this.buildRequestURL()));
 
 
-        sb.append(String.format("%s : %s \r\n","hasRequestProperties",(this.hasRequestProperties()) ? "true":"false"));
+        sb.append(String.format("%s : %s \r\n", "hasRequestProperties", (this.hasRequestProperties()) ? "true" : "false"));
 
-        for (Map.Entry<String,String> e : this.getRequestProperties().entrySet()) {
-            sb.append(String.format("HEADER %s : %s \r\n",e.getKey(),e.getValue()));
+        for (Map.Entry<String, String> e : this.getRequestProperties().entrySet()) {
+            sb.append(String.format("HEADER %s : %s \r\n", e.getKey(), e.getValue()));
         }
 
-        sb.append(String.format("%s : %s \r\n","hasBody",(this.isBodySet()) ? "true":"false"));
+        sb.append(String.format("%s : %s \r\n", "hasBody", (this.isBodySet()) ? "true" : "false"));
 //        sb.append(String.format("%s : %s \r\n","hasBody",(this.isBodySet()) ? "true":"false"));
-        sb.append(String.format("%s :\n\n %s \r\n","body",this.getRequestBody()));
-
+        sb.append(String.format("%s :\n\n %s \r\n", "body", this.getRequestBody()));
 
 
         return sb.toString();
     }
 
-    public void start(){
+    public void start() {
         new Connection().execute(this);
     }
+
     public interface OnRequestDoneListener {
         public void onRequestDone(Request request);
     }

@@ -2,9 +2,11 @@ package com.riggitt.utils.wpjson.api;
 
 import android.util.Log;
 
+import com.example.josem.shoplistbesta.api.Listra;
 import com.riggitt.utils.Utils;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,6 +55,27 @@ public class Response {
         this.responseContent = "RESPONSE NOT SET";
         this.headers = null;
     }
+
+    public Response(int responseCode,String responseContent){
+        this.responseCode = responseCode;
+        this.responseContent = responseContent;
+        this.headers = null;
+    }
+
+    public static Response createErrorResponse(int responseCode,String errorMessage){
+        JSONObject o = new JSONObject();
+
+        try {
+            o.put(Constants.STATUS,Constants.ERROR);
+            o.put(Constants.ERROR,errorMessage);
+            return new Response(responseCode,o.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 
     public Response(HttpURLConnection c){
         this();

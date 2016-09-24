@@ -21,6 +21,11 @@ import java.util.Map;
  */
 public class Utils {
 
+    public static boolean isNullOrEmpty(String s){
+        if(s == null ){return true;}
+        if(s.length() == 0) {return true;}
+        return false;
+    }
     public static String toString(InputStream stream) throws IOException {
         if(stream==null) return "";
         BufferedReader r = new BufferedReader(new InputStreamReader(stream));

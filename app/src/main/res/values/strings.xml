@@ -21,10 +21,15 @@
         completions."
     </string>
 
+    <string name="log_in">Log In</string>
+    <string name="log_out">Log Out</string>
+    <string name="disconnect">Disconnect</string>
 
     <string-array name="http_request_methods">
         <item>GET</item>
         <item>POST</item>
     </string-array>
     <string name="title_activity_login_test">LoginTest</string>
+    <string name="title_activity_user_main">UserMainActivity</string>
+    <string name="click_back_again_to_close">Pulsa atrás otra vez para cerrar</string>
 </resources>
